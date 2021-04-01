@@ -15,7 +15,7 @@ class GameObject:
         self.position += self.velocity
 
     def collides_with(self, other_obj):
-        distance = self.position.distance_to(other_obj)
+        distance = self.position.distance_to(other_obj.position)
         return distance < self.radius + other_obj.radius
 
     

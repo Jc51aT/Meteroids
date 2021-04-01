@@ -5,7 +5,7 @@ class Meteoroids:
     def __init__(self):
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
-        self.background = load_sprite("space", False)
+        self.background = load_sprite("space1", False)
 
     def game_loop(self):
         while True:

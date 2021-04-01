@@ -1,15 +1,16 @@
 import pygame
 
 from util import load_sprite
-from models import GameObject
+from models import Spaceship
 
 class Meteoroids:
     def __init__(self):
         self._init_pygame()
         self.screen = pygame.display.set_mode((800, 600))
         self.background = load_sprite("space1", False)
-        self.spaceship = GameObject((400, 300), load_sprite("spaceship1"), (0, 0))
-        self.meteroid = GameObject((400, 300), load_sprite("AsteroidLarge"), (1, 0))
+        self.clock = pygame.time.Clock()
+        self.spaceship = Spaceship((400, 300))
+        
 
 
     def game_loop(self):
@@ -29,14 +30,19 @@ class Meteoroids:
             ):
                 quit()
 
+            is_key_pressed = pygame.key.get_pressed()
+            
+            if is_key_pressed[pygame.K_RIGHT]:
+                self.spaceship.rotate(clockwise=True)
+            elif is_key_pressed[pygame.K_LEFT]:
+                self.spaceship.rotate(clockwise=False)
+
     def _process_game_logic(self):
         self.spaceship.move()
-        self.meteroid.move()
+        
 
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
         self.spaceship.draw(self.screen)
-        self.meteroid.draw(self.screen)
         pygame.display.flip()
-        print("Collides:", self.spaceship.collides_with(self.meteroid))
-    
+        self.clock.tick(60)

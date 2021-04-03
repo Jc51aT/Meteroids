@@ -1,7 +1,7 @@
 from pygame.math import  Vector2
 from pygame.transform import rotozoom
 
-from util import load_sprite, wrap_position
+from util import load_sprite, wrap_position, get_random_velocity
 
 UP = Vector2(0, -1)
 
@@ -46,3 +46,8 @@ class Spaceship(GameObject):
         rotated_surface_size = Vector2(rotated_surface.get_size())
         blit_position = self.position - rotated_surface_size * 0.5
         surface.blit(rotated_surface, blit_position)
+
+class Meteroid(GameObject):
+
+    def __init__(self, position):
+        super().__init__(position, load_sprite("AsteroidLarge"), get_random_velocity(1,3))

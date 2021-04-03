@@ -24,7 +24,12 @@ class Meteoroids:
         
 
     def _get_game_objects(self):
-        return [*self.meteroids, self.spaceship]
+        game_objs = [*self.meteroids]
+
+        if self.spaceship:
+            game_objs.append(self.spaceship)
+
+        return game_objs
 
     def game_loop(self):
         while True:
@@ -45,17 +50,24 @@ class Meteoroids:
 
             is_key_pressed = pygame.key.get_pressed()
             
-            if is_key_pressed[pygame.K_RIGHT]:
-                self.spaceship.rotate(clockwise=True)
-            elif is_key_pressed[pygame.K_LEFT]:
-                self.spaceship.rotate(clockwise=False)
+            if self.spaceship:
+                if is_key_pressed[pygame.K_RIGHT]:
+                    self.spaceship.rotate(clockwise=True)
+                elif is_key_pressed[pygame.K_LEFT]:
+                    self.spaceship.rotate(clockwise=False)
 
-            if is_key_pressed[pygame.K_UP]:
-                self.spaceship.accelerate()
+                if is_key_pressed[pygame.K_UP]:
+                    self.spaceship.accelerate()
 
     def _process_game_logic(self):
         for game_object in self._get_game_objects():
             game_object.move(self.screen)
+
+        if self.spaceship:
+            for meteroid in self.meteroids:
+                if meteroid.collides_with(self.spaceship):
+                    self.spaceship = None
+                    break
         
         
 

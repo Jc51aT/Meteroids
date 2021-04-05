@@ -77,6 +77,13 @@ class Meteoroids:
                     break
 
         for bullet in self.bullets[:]:
+            for meteroid in self.meteroids[:]:
+                if meteroid.collides_with(bullet):
+                    self.meteroids.remove(meteroid)
+                    self.bullets.remove(bullet)
+                    break
+                
+        for bullet in self.bullets[:]:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
         

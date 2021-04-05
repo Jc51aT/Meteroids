@@ -13,7 +13,8 @@ class Meteoroids:
         self.background = load_sprite("space1", False)
         self.clock = pygame.time.Clock()
         self.meteroids = []
-        self.spaceship = Spaceship((400, 300))
+        self.bullets = []
+        self.spaceship = Spaceship((400, 300), self.bullets.append)
         
         for _ in range(3):
             while True:
@@ -24,7 +25,7 @@ class Meteoroids:
         
 
     def _get_game_objects(self):
-        game_objs = [*self.meteroids]
+        game_objs = [*self.meteroids, *self.bullets]
 
         if self.spaceship:
             game_objs.append(self.spaceship)
@@ -47,6 +48,12 @@ class Meteoroids:
                 event.type == pygame.KEYDOWN and event.key == pygame.K_q
             ):
                 quit()
+            elif(
+                self.spaceship
+                and event.type == pygame.KEYDOWN
+                and event.key  == pygame.K_SPACE
+            ):
+                self.spaceship.shoot()
 
             is_key_pressed = pygame.key.get_pressed()
             
@@ -68,6 +75,10 @@ class Meteoroids:
                 if meteroid.collides_with(self.spaceship):
                     self.spaceship = None
                     break
+
+        for bullet in self.bullets[:]:
+            if not self.screen.get_rect().collidepoint(bullet.position):
+                self.bullets.remove(bullet)
         
         
 

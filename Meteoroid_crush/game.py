@@ -1,6 +1,6 @@
 import pygame
 
-from util import load_sprite, get_random_position
+from util import load_sprite, get_random_position, print_text
 from models import Spaceship, Meteroid
 
 class Meteoroids:
@@ -12,6 +12,8 @@ class Meteoroids:
         self.screen = pygame.display.set_mode((800, 600))
         self.background = load_sprite("space1", False)
         self.clock = pygame.time.Clock()
+        self.font = pygame.font.Font(None, 64)
+        self.message = ""
         self.meteroids = []
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
@@ -31,7 +33,7 @@ class Meteoroids:
             game_objs.append(self.spaceship)
 
         return game_objs
-        
+
 
     def game_loop(self):
         while True:
@@ -78,6 +80,7 @@ class Meteoroids:
             for meteroid in self.meteroids:
                 if meteroid.collides_with(self.spaceship):
                     self.spaceship = None
+                    self.message = "Game Over."
                     break
 
         for bullet in self.bullets[:]:
@@ -92,11 +95,17 @@ class Meteoroids:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)
         
+        if not self.meteroids and self.spaceship:
+            self.message = "You Won!"
         
 
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
         for game_object in self._get_game_objects():
             game_object.draw(self.screen)
+
+        if self.message:
+            print_text(self.screen, self.message, self.font)
+            
         pygame.display.flip()
         self.clock.tick(60)

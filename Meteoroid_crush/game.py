@@ -21,7 +21,7 @@ class Meteoroids:
                 pos = get_random_position(self.screen)
                 if pos.distance_to(self.spaceship.position) > self.MIN_METEROID_DIS:
                     break
-            self.meteroids.append(Meteroid(pos))
+            self.meteroids.append(Meteroid(pos, self.meteroids.append))
         
 
     def _get_game_objects(self):
@@ -31,6 +31,7 @@ class Meteoroids:
             game_objs.append(self.spaceship)
 
         return game_objs
+        
 
     def game_loop(self):
         while True:
@@ -38,9 +39,11 @@ class Meteoroids:
             self._process_game_logic()
             self._draw()
 
+
     def _init_pygame(self):
         pygame.init()
         pygame.display.set_caption("Meteriods")
+
 
     def _handle_input(self):
         for event in pygame.event.get():
@@ -66,6 +69,7 @@ class Meteoroids:
                 if is_key_pressed[pygame.K_UP]:
                     self.spaceship.accelerate()
 
+
     def _process_game_logic(self):
         for game_object in self._get_game_objects():
             game_object.move(self.screen)
@@ -81,8 +85,9 @@ class Meteoroids:
                 if meteroid.collides_with(bullet):
                     self.meteroids.remove(meteroid)
                     self.bullets.remove(bullet)
+                    meteroid.split()
                     break
-                
+
         for bullet in self.bullets[:]:
             if not self.screen.get_rect().collidepoint(bullet.position):
                 self.bullets.remove(bullet)

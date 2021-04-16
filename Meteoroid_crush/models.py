@@ -32,6 +32,7 @@ class Spaceship(GameObject):
     def __init__(self, position, create_bullet_callback):
         self.create_bullet_callback = create_bullet_callback
         self.laser_sound = load_sound('laser')
+        self.explosion_sound = load_sound("crush")
         self.direction = Vector2(UP)
         super().__init__(position, load_sprite("spaceship"), Vector2(0))
 

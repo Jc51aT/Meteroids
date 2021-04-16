@@ -1,16 +1,20 @@
 import pygame
 
-from util import load_sprite, get_random_position, print_text
+from util import load_sprite, get_random_position, print_text, load_sound, draw_text
 from models import Spaceship, Meteroid
 
 class Meteoroids:
 
     MIN_METEROID_DIS = 250
+    WIDTH = 800
+    HEIGHT = 600
 
     def __init__(self):
         self._init_pygame()
-        self.screen = pygame.display.set_mode((800, 600))
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.background = load_sprite("space1", False)
+        self.background_game_music = load_sound("game_play_music")
+        self.game_over_music = load_sound("game_over_music")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 64)
         self.message = ""
@@ -34,8 +38,32 @@ class Meteoroids:
 
         return game_objs
 
+    def welcome_screen(self):
+        welcome_message = """ PIZZA DOG """
+        intro_music = load_sound("welcome_screen_music")
+        intro_music.play()
+        self.screen.blit(self.background, (0, 0))
+        draw_text(self.screen, welcome_message, self.font,  self.WIDTH/2, self.HEIGHT/3)
+        draw_text(self.screen, "Press [ENTER] To Begin", self.font,  self.WIDTH/2, (self.HEIGHT/2)+40)
+            
+        intro = True
+        while intro:
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    intro_music.stop()
+                    intro = False
+            pygame.display.flip()
+
 
     def game_loop(self):
+
+        #intro_loop
+        self.welcome_screen()
+
+        self.background_game_music.play()
         while True:
             self._handle_input()
             self._process_game_logic()
@@ -73,12 +101,16 @@ class Meteoroids:
 
 
     def _process_game_logic(self):
+
         for game_object in self._get_game_objects():
             game_object.move(self.screen)
 
         if self.spaceship:
             for meteroid in self.meteroids:
                 if meteroid.collides_with(self.spaceship):
+                    self.spaceship.explosion_sound.play()
+                    self.background_game_music.stop()
+                    self.game_over_music.play()
                     self.spaceship = None
                     self.message = "Game Over."
                     break

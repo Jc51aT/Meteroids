@@ -42,3 +42,9 @@ def print_text(surface, text, font, color=Color("white")):
     rect.center = Vector2(surface.get_size()) / 2
 
     surface.blit(txt_surface, rect)
+
+def draw_text(surf, text, font,  x, y, color=Color("white")):
+    txt_surface = font.render(text, True, color)    
+    text_rect = txt_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(txt_surface, text_rect)

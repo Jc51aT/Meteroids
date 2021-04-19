@@ -25,8 +25,8 @@ class GameObject:
 
 
 class Spaceship(GameObject):
-    MANEUVERABILITY = 3
-    ACCELERATION = 0.25
+    MANEUVERABILITY = 10
+    ACCELERATION = 0.33
     BULLET_SPEED = 3
 
     def __init__(self, position, create_bullet_callback):
@@ -34,7 +34,7 @@ class Spaceship(GameObject):
         self.laser_sound = load_sound('laser')
         self.explosion_sound = load_sound("crush")
         self.direction = Vector2(UP)
-        super().__init__(position, load_sprite("spaceship"), Vector2(0))
+        super().__init__(position, rotozoom(load_sprite("spaceship"), 0, 0.5), Vector2(0))
 
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
@@ -42,7 +42,13 @@ class Spaceship(GameObject):
         self.direction.rotate_ip(angle)
 
     def accelerate(self):
-        self.velocity += self.direction * self.ACCELERATION
+        if self.velocity.y > -1.5:
+            self.velocity += self.direction * self.ACCELERATION
+        print(self.velocity.y)
+
+    def reverse(self):
+        if self.velocity.y < 1:
+            self.velocity -= self.direction * self.ACCELERATION
 
     def draw(self, surface):
         angle = self.direction.angle_to(UP)
@@ -63,10 +69,12 @@ class Meteroid(GameObject):
     def __init__(self, position, create_meteroid_callback, size=3):
         self.size = size
         self.create_meteroid_callback = create_meteroid_callback
+        self.explosion_sound = load_sound("meteriod_explo")
+        self.explosion_sound.set_volume(100)
 
         size_to_scale = {
-            3:1,
-            2:0.5,
+            3:.66,
+            2:0.44,
             1:0.25
         }
         scale = size_to_scale[size]
@@ -82,7 +90,7 @@ class Meteroid(GameObject):
 
 class Bullet(GameObject):
     def __init__(self, position, velocity):
-        super().__init__(position, load_sprite('pizza'), velocity)
+        super().__init__(position, rotozoom(load_sprite("pizza"), 0, 0.5), velocity)
 
     def move(self, surface):
         self.position = self.position + self.velocity

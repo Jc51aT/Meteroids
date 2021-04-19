@@ -1,15 +1,17 @@
 import pygame
+import json
 
 from util import load_sprite, get_random_position, print_text, load_sound, draw_text
 from models import Spaceship, Meteroid
 
 class Meteoroids:
 
-    MIN_METEROID_DIS = 250
+    MIN_METEROID_DIS = 300
     WIDTH = 800
     HEIGHT = 600
 
     def __init__(self):
+        self.score = 0
         self._init_pygame()
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.background = load_sprite("space1", False)
@@ -22,7 +24,7 @@ class Meteoroids:
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
         
-        for _ in range(3):
+        for _ in range(1):
             while True:
                 pos = get_random_position(self.screen)
                 if pos.distance_to(self.spaceship.position) > self.MIN_METEROID_DIS:
@@ -98,7 +100,8 @@ class Meteoroids:
 
                 if is_key_pressed[pygame.K_UP]:
                     self.spaceship.accelerate()
-
+                elif is_key_pressed[pygame.K_DOWN]:
+                    self.spaceship.reverse()
 
     def _process_game_logic(self):
 
@@ -118,6 +121,14 @@ class Meteoroids:
         for bullet in self.bullets[:]:
             for meteroid in self.meteroids[:]:
                 if meteroid.collides_with(bullet):
+                    meteroid_size = meteroid.size
+                    if meteroid_size == 3:
+                        self.score += 3 
+                    elif meteroid_size == 2:
+                        self.score += 2
+                    else:
+                        self.score += 1 
+                    meteroid.explosion_sound.play()   
                     self.meteroids.remove(meteroid)
                     self.bullets.remove(bullet)
                     meteroid.split()

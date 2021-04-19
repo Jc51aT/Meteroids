@@ -43,6 +43,7 @@ def print_text(surface, text, font, color=Color("white")):
 
     surface.blit(txt_surface, rect)
 
+
 def draw_text(surf, text, font,  x, y, color=Color("white")):
     txt_surface = font.render(text, True, color)    
     text_rect = txt_surface.get_rect()

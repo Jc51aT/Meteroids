@@ -44,7 +44,6 @@ class Spaceship(GameObject):
     def accelerate(self):
         if self.velocity.y > -1.5:
             self.velocity += self.direction * self.ACCELERATION
-        print(self.velocity.y)
 
     def reverse(self):
         if self.velocity.y < 1:
@@ -80,7 +79,7 @@ class Meteroid(GameObject):
         scale = size_to_scale[size]
         sprite = rotozoom(load_sprite("meteroid"), 0, scale)
 
-        super().__init__(position, sprite, get_random_velocity(1,3))
+        super().__init__(position, sprite, get_random_velocity(1,2))
 
     def split(self):
         if self.size > 1:

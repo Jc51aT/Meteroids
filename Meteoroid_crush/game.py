@@ -1,6 +1,6 @@
 import pygame
-import json
 
+from pygame import Color
 from util import load_sprite, get_random_position, print_text, load_sound, draw_text
 from models import Spaceship, Meteroid
 
@@ -24,7 +24,7 @@ class Meteoroids:
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
         
-        for _ in range(1):
+        for _ in range(4):
             while True:
                 pos = get_random_position(self.screen)
                 if pos.distance_to(self.spaceship.position) > self.MIN_METEROID_DIS:
@@ -40,7 +40,7 @@ class Meteoroids:
 
         return game_objs
 
-    def welcome_screen(self):
+    def _welcome_screen(self):
         welcome_message = """ PIZZA DOG """
         intro_music = load_sound("welcome_screen_music")
         intro_music.play()
@@ -63,7 +63,7 @@ class Meteoroids:
     def game_loop(self):
 
         #intro_loop
-        self.welcome_screen()
+        self._welcome_screen()
 
         self.background_game_music.play()
         while True:
@@ -115,7 +115,7 @@ class Meteoroids:
                     self.background_game_music.stop()
                     self.game_over_music.play()
                     self.spaceship = None
-                    self.message = "Game Over."
+                    self.message = "Game Over... Final Score: " + str(self.score)
                     break
 
         for bullet in self.bullets[:]:
@@ -141,9 +141,14 @@ class Meteoroids:
         if not self.meteroids and self.spaceship:
             self.message = "You Won!"
         
+    def _display_score(self):
+        current_score = self.font.render("Score: " + str(self.score), 1, Color("white"))
+        self.screen.blit(current_score, (self.WIDTH - 10 - current_score.get_width(), 10))
 
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
+        self._display_score()
+
         for game_object in self._get_game_objects():
             game_object.draw(self.screen)
 
